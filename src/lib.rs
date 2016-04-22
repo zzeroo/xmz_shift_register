@@ -1,3 +1,5 @@
+extern crate sysfs_gpio;
+
 use sysfs_gpio::{Direction, Pin};
 
 pub struct ShiftRegister {

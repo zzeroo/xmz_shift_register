@@ -77,9 +77,9 @@ impl ShiftRegister {
     /// Set one given bit:
     ///
     /// ```
-    /// extern crate xmz_client_server;
+    /// extern crate xmz_shift_register;
     ///
-    /// let mut led = xmz_client_server::shift_register::ShiftRegister::new_led();
+    /// let mut led = xmz_shift_register::ShiftRegister::new_led();
     /// assert_eq!(led.data, 0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000);
     ///
     /// led.set(1);

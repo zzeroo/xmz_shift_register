@@ -72,6 +72,14 @@ impl ShiftRegister {
 
     }
 
+    /// Sets one given bit.
+    ///
+    /// # Arguments
+    /// * `num`     - Bit number to set. **This number is one based!**
+    ///
+    /// The parameter `num` is one, not zero, based. This mean `set(1)` set the bit 0 in the shift register,
+    /// `set(3)` set the 2nd bit and so forth.
+    ///
     /// # Examples
     ///
     /// Set one given bit:
@@ -82,8 +90,24 @@ impl ShiftRegister {
     /// let mut led = xmz_shift_register::ShiftRegister::new_led();
     /// assert_eq!(led.data, 0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000);
     ///
-    /// led.set(1);
-    /// assert_eq!(led.data, 0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001);
+    /// led.set(10);
+    /// assert_eq!(led.data, 0b00000000_00000000_00000000_00000000_00000000_00000000_00000010_00000000);
+    /// ```
+    ///
+    /// Set two or more bit bit:
+    ///
+    /// If two or more bits are set the state of prevous seted bits is not change. If You eg. set bit
+    /// 10 and after this you set bit 5 then bits 10 and bit 5 are set.
+    ///
+    /// ```
+    /// extern crate xmz_shift_register;
+    ///
+    /// let mut led = xmz_shift_register::ShiftRegister::new_led();
+    ///
+    /// led.set(10);
+    /// assert_eq!(led.data, 0b00000000_00000000_00000000_00000000_00000000_00000000_00000010_00000000);
+    /// led.set(5);
+    /// assert_eq!(led.data, 0b00000000_00000000_00000000_00000000_00000000_00000000_00000010_00010000);
     /// ```
     pub fn set(&mut self, num: u64) {
         self.data |= 1 << num - 1;
@@ -114,8 +138,8 @@ impl ShiftRegister {
         self.set_pin_direction(&oe_pin, &ds_pin, &clock_pin, &latch_pin);
 
         // Clock in data
-        for i in (0..24).rev() {
-            match (data >> i) & 1 {
+        for i in (0..64).rev() {
+            match (data.clone() >> i) & 1 {
                 1 => { ds_pin.set_value(1).unwrap(); },
                 _ => { ds_pin.set_value(0).unwrap(); },
             }
@@ -133,4 +157,3 @@ impl ShiftRegister {
         self.shift_out();
     }
 }
-

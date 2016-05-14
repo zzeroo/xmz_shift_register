@@ -23,6 +23,33 @@ fn test_multiple_set() {
     assert!(register.data == 0b0010_0001_0001);
 }
 
+#[test]
+fn test_get_one_bit() {
+    let mut register = ShiftRegister::new(RegisterType::Mock);
+    // befor all value sould be null, tested already
+    assert!(register.get(5) == false);
+    register.set(5);
+    assert!(register.get(5) == true);
+}
+
+#[test]
+fn test_toggle_one_bit() {
+    let mut register = ShiftRegister::new(RegisterType::Mock);
+    assert!(register.get(5) == false);
+    // Toggle on
+    register.toggle(5);
+    assert!(register.get(5) == true);
+    // Toggle off
+    register.toggle(5);
+    assert!(register.get(5) == false);
+
+    register.toggle(5);
+    assert!(register.get(5) == true);
+    register.toggle(5);
+    assert!(register.get(5) == false);
+}
+
+
 /// `shift_out()` should not change the data in self.data field.
 #[test]
 fn test_shift_out_should_not_change_data() {
@@ -32,4 +59,26 @@ fn test_shift_out_should_not_change_data() {
     assert!(register.data == 0b11);
     register.shift_out();
     assert!(register.data == 0b11);
+}
+
+#[test]
+#[should_panic]
+#[ignore]
+fn test_export_pins_on_led() {
+    let led = ShiftRegister::new(RegisterType::LED);
+    led.export_pins();
+}
+
+#[test]
+#[should_panic]
+#[ignore]
+fn test_export_pins_on_relais() {
+    let relais = ShiftRegister::new(RegisterType::Relais);
+    relais.export_pins();
+}
+
+#[test]
+fn test_export_pins_on_mock() {
+    let mock = ShiftRegister::new(RegisterType::Mock);
+    mock.export_pins();
 }

@@ -25,7 +25,6 @@ pub struct ShiftRegister {
 impl ShiftRegister {
     /// Creates a new instance
     ///
-    /// All member variables can set to custom values
     pub fn new(register_type: RegisterType) -> ShiftRegister {
         match register_type {
             RegisterType::LED => ShiftRegister { oe_pin: Pin::new(276), ds_pin: Pin::new(38),
@@ -41,7 +40,8 @@ impl ShiftRegister {
     }
 
     /// Export the needed pins, panic if this fails
-    fn export_pins(&self) {
+    ///
+    pub fn export_pins(&self) {
         let register = self;
         match self.register_type {
             RegisterType::LED | RegisterType::Relais => {
@@ -65,6 +65,47 @@ impl ShiftRegister {
             _ => {},
         }
     }
+
+    /// Get a boolean value depending on the pin state
+    ///
+    /// # Arguments
+    /// * `num`     - Bit number to get. **This number is one based!**
+    ///
+    /// The parameter `num` is one, not zero, based. This mean `get(1)` get the bit 0 in the shift register,
+    /// `get(3)` get the 2nd bit and so forth.
+    ///
+    pub fn get(&self, num: u64) -> bool {
+        let result = (self.data >> num - 1) & 1;
+        match result {
+            0 => false,
+            _ => true,
+        }
+    }
+
+    /// Sets one given bit in data buffer
+    ///
+    /// # Arguments
+    /// * `num`     - Bit number to set. **This number is one based!**
+    ///
+    /// The parameter `num` is one, not zero, based. This mean `set(1)` set the bit 0 in the shift register,
+    /// `set(3)` set the 2nd bit and so forth.
+    ///
+    pub fn set(&mut self, num: u64) {
+        self.data |= 1 << num - 1;
+    }
+
+    /// Toggle the given bit number in data buffer
+    ///
+    /// # Arguments
+    /// * `num`     - Bit number to toggle. **This number is one based!**
+    ///
+    /// The parameter `num` is one, not zero, based. This mean `toggle(1)` toggle the bit 0 in the shift register,
+    /// `toggle(3)` toggle the 2nd bit and so forth.
+    ///
+    pub fn toggle(&mut self, num: u64) {
+        self.data ^= 1 << num - 1;
+    }
+
 
     /// Sets the directions of the given pins.
     fn set_pin_direction(&self) {
@@ -113,18 +154,6 @@ impl ShiftRegister {
             },
             _ => {},
         }
-    }
-
-    /// Sets one given bit.
-    ///
-    /// # Arguments
-    /// * `num`     - Bit number to set. **This number is one based!**
-    ///
-    /// The parameter `num` is one, not zero, based. This mean `set(1)` set the bit 0 in the shift register,
-    /// `set(3)` set the 2nd bit and so forth.
-    ///
-    pub fn set(&mut self, num: u64) {
-        self.data |= 1 << num - 1;
     }
 
     /// Toogles clock pin high->low

@@ -73,7 +73,7 @@ fn test_export_pins_on_led() {
 #[should_panic]
 #[ignore]
 fn test_export_pins_on_relais() {
-    let relais = ShiftRegister::new(RegisterType::Relais);
+    let relais = ShiftRegister::new(RegisterType::RELAIS);
     relais.export_pins();
 }
 

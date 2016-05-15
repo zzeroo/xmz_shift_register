@@ -8,8 +8,8 @@ use sysfs_gpio::{Direction, Pin};
 /// Mock shift register don't call direct hardware.
 pub enum RegisterType {
     LED,
-    Relais,
-    Mock,
+    RELAIS,
+    MOCK,
 }
 
 /// Datastructure representing the shift registers.
@@ -27,24 +27,29 @@ impl ShiftRegister {
     ///
     pub fn new(register_type: RegisterType) -> ShiftRegister {
         match register_type {
-            RegisterType::LED => ShiftRegister { oe_pin: Pin::new(276), ds_pin: Pin::new(38),
-                clock_pin: Pin::new(44), latch_pin: Pin::new(40),
+            RegisterType::LED => ShiftRegister {
+                oe_pin: Pin::new(276),
+                ds_pin: Pin::new(38),
+                clock_pin: Pin::new(44),
+                latch_pin: Pin::new(40),
                 data: 0, register_type: RegisterType::LED},
-            RegisterType::Relais => ShiftRegister { oe_pin: Pin::new(277), ds_pin: Pin::new(45),
-                clock_pin: Pin::new(39), latch_pin: Pin::new(37),
-                data: 0, register_type: RegisterType::Relais},
-            RegisterType::Mock => ShiftRegister { oe_pin: Pin::new(0), ds_pin: Pin::new(0),
+            RegisterType::RELAIS => ShiftRegister {
+                oe_pin: Pin::new(277),
+                ds_pin: Pin::new(45),
+                clock_pin: Pin::new(39),
+                latch_pin: Pin::new(37),
+                data: 0, register_type: RegisterType::RELAIS},
+            RegisterType::MOCK => ShiftRegister { oe_pin: Pin::new(0), ds_pin: Pin::new(0),
                 clock_pin: Pin::new(0), latch_pin: Pin::new(0),
-                data: 0, register_type: RegisterType::Mock},
+                data: 0, register_type: RegisterType::MOCK},
         }
     }
 
     /// Export the needed pins, panic if this fails
     ///
     pub fn export_pins(&self) {
-        let register = self;
         match self.register_type {
-            RegisterType::LED | RegisterType::Relais => {
+            RegisterType::LED | RegisterType::RELAIS => {
                 match self.oe_pin.export() {
                     Ok(()) => (),
                     Err(err) => println!("!OE (output enabled) pin could not be exported: {}", err),
@@ -110,7 +115,7 @@ impl ShiftRegister {
     /// Sets the directions of the given pins.
     fn set_pin_direction(&self) {
         match self.register_type {
-            RegisterType::LED | RegisterType::Relais => {
+            RegisterType::LED | RegisterType::RELAIS => {
                 match self.oe_pin.set_direction(Direction::Out) {
                     Ok(()) => { let _ = self.oe_pin.set_value(0); }, // !OE pin low == Shift register enabled.
                     Err(err) => println!("Could not set direction of DATA pin: {}", err),
@@ -138,7 +143,7 @@ impl ShiftRegister {
     /// Shift out the current data
     pub fn shift_out(&self) {
         match self.register_type {
-            RegisterType::LED | RegisterType::Relais => {
+            RegisterType::LED | RegisterType::RELAIS => {
                 self.export_pins();
                 self.set_pin_direction();
 

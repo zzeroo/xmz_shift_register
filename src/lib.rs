@@ -32,16 +32,22 @@ impl ShiftRegister {
                 ds_pin: Pin::new(38),
                 clock_pin: Pin::new(44),
                 latch_pin: Pin::new(40),
-                data: 0, register_type: RegisterType::LED},
+                data: 0, register_type: RegisterType::LED
+            },
             RegisterType::RELAIS => ShiftRegister {
                 oe_pin: Pin::new(277),
                 ds_pin: Pin::new(45),
                 clock_pin: Pin::new(39),
                 latch_pin: Pin::new(37),
-                data: 0, register_type: RegisterType::RELAIS},
-            RegisterType::MOCK => ShiftRegister { oe_pin: Pin::new(0), ds_pin: Pin::new(0),
-                clock_pin: Pin::new(0), latch_pin: Pin::new(0),
-                data: 0, register_type: RegisterType::MOCK},
+                data: 0, register_type: RegisterType::RELAIS
+            },
+            RegisterType::MOCK => ShiftRegister {
+                oe_pin: Pin::new(0),
+                ds_pin: Pin::new(0),
+                clock_pin: Pin::new(0),
+                latch_pin: Pin::new(0),
+                data: 0, register_type: RegisterType::MOCK
+            },
         }
     }
 
@@ -179,6 +185,11 @@ impl ShiftRegister {
     /// after this function, they are known zero.
     pub fn init(&mut self) {
         self.data = 0;
-        self.shift_out();
+        match self.register_type {
+            RegisterType::LED | RegisterType::RELAIS => {
+                self.shift_out();
+            }
+            RegisterType::MOCK => {}
+        }
     }
 }

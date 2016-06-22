@@ -1,3 +1,12 @@
+#![doc(html_logo_url = "https://raw.githubusercontent.com/Kliemann-Service-GmbH/xMZ-Mod-Touch-Server/master/share/xmz-logo.png",
+       html_favicon_url = "https://raw.githubusercontent.com/Kliemann-Service-GmbH/xMZ-Mod-Touch-Server/master/share/favicon.ico",
+       html_root_url = "https://gaswarnanlagen.com/")]
+//! Kontrolliert die ShiftRegister Hardware der 'xMZ-Mod-Touch'-hardware
+//!
+//! TODO: Ein thread sollte im 1/10Sek Takt den Speicher einclocken. Das spart die latch_out Funktion
+//!
+//! TODO: Blink funktion für einzelne Speicher Werte
+//!
 extern crate sysfs_gpio;
 use sysfs_gpio::{Direction, Pin};
 
